@@ -5,5 +5,8 @@
   "scripts": {
     "start": "node server.js"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "pixl-json-stream": "^1.0.6"
+  }
 }

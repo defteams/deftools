@@ -199,6 +199,10 @@ final class DefTools {
 		if ( ! isset( $this->registry ) ) {
 			$this->registry = new DefTools_Registry();
 
+			$this->registry->register_object( DefTools_Toolbar::instance() );
+			$this->registry->register_object( DefTools_Logs::instance() );
+			$this->registry->register_object( DefTools_Email::instance() );
+
 			/**
 			 * @dev-note
 			 * Load classes that only needed in admin screens (wp-admin)

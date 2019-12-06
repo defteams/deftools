@@ -45,10 +45,17 @@ class DefTools_Logs {
 	 * Constructor
 	 */
 	public function __construct(){
+		add_action('deftools/toolbar/submenus', array( $this, 'add_toolbar_submenus' ), 10, 1);
 
 		// create a log channel
 		$this->log = new Logger( sprintf( 'DeftLog - %s', get_bloginfo( 'name' ) ) );
 		$this->setup_handler();
+	}
+
+	public function add_toolbar_submenus( $submenus ){
+		$email_debug_title = sprintf( __( 'Logs: %s', DefTools::TEXT_DOMAIN ), 'enabled' );
+		$submenus[] = array( 'title' => $email_debug_title, 'id' => 'deftools-logs', 'href' => '/', 'meta' => array('target' => '_blank') );
+		return $submenus;
 	}
 
 	public function log( $message, $data = array(), $type = 'debug' ){
@@ -73,7 +80,7 @@ class DefTools_Logs {
 
 		// Create the handler
 		$handler = new SocketHandler( DEFTOOLS_LOG_SOCKET_URL );
-		$handler->setPersistent(true);
+		$handler->setPersistent(false); // Set true to persistent connection.
 		$handler->setFormatter(new JsonFormatter());
 		$this->log->pushHandler($handler);
 
