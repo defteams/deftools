@@ -130,6 +130,7 @@ final class DefTools {
 		 $upload_dir = wp_upload_dir( null, false );
 		 $this->define( 'DEFTOOLS_LOG_DIR', $upload_dir['basedir'] . '/deftools-logs/' );
 		 $this->define( 'DEFTOOLS_LOG_SOCKET_URL', 'tcp://127.0.0.1:8888' );
+		 $this->define( 'DEFTOOLS_LOG_ENABLE_SOCKET_HANDLER', false );
 	}
 
 	/**

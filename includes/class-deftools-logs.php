@@ -45,16 +45,14 @@ class DefTools_Logs {
 	 * Constructor
 	 */
 	public function __construct(){
-		add_action('deftools/toolbar/submenus', array( $this, 'add_toolbar_submenus' ), 10, 1);
+		$this->setup_log_channel();
 
-		// create a log channel
-		$this->log = new Logger( sprintf( 'DeftLog - %s', get_bloginfo( 'name' ) ) );
-		$this->setup_handler();
+		add_action('deftools/toolbar/submenus', array( $this, 'add_toolbar_submenus' ), 10, 1);
 	}
 
 	public function add_toolbar_submenus( $submenus ){
-		$email_debug_title = sprintf( __( 'Logs: %s', DefTools::TEXT_DOMAIN ), 'enabled' );
-		$submenus[] = array( 'title' => $email_debug_title, 'id' => 'deftools-logs', 'href' => '/', 'meta' => array('target' => '_blank') );
+		$log_debug_title = sprintf( __( 'Logs: %s', DefTools::TEXT_DOMAIN ), 'enabled' );
+		$submenus[] = array( 'title' => $log_debug_title, 'id' => 'deftools-logs', 'href' => '/', 'meta' => array('target' => '_blank') );
 		return $submenus;
 	}
 
@@ -73,18 +71,34 @@ class DefTools_Logs {
 		} catch (\Exception $e) {}
 	}
 
-	protected function setup_handler() {
-		// setup handler
-		// $this->log->pushHandler(new StreamHandler( DEFTOOLS_LOG_DIR . 'deftlog.log', Logger::WARNING));
-		// $this->log->pushHandler(new ChromePHPHandler(Logger::DEBUG));
+	protected function setup_log_channel() {
+		// create a log channel
+		$_log = new Logger( sprintf( 'DeftLog - %s', get_bloginfo( 'name' ) ) );
+		$handlers = $this->get_handlers();
 
-		// Create the handler
-		$handler = new SocketHandler( DEFTOOLS_LOG_SOCKET_URL );
-		$handler->setPersistent(false); // Set true to persistent connection.
-		$handler->setFormatter(new JsonFormatter());
-		$this->log->pushHandler($handler);
+		if( ! empty( $handlers ) ) {
+			foreach ($handlers as $handler) {
+				$_log->pushHandler($handler);
+			}
+		}
 
-		do_action( 'deftools_after_setup_log_handler', $this );
+		$this->log = $_log;
+	}
+
+	protected function get_handlers() {
+		$handlers = array();
+
+		if ( DEFTOOLS_LOG_ENABLE_SOCKET_HANDLER ) {
+			$socket_handler = new SocketHandler( DEFTOOLS_LOG_SOCKET_URL );
+			$socket_handler->setPersistent( false ); // Set true to persistent connection.
+			$socket_handler->setFormatter( new JsonFormatter() );
+			$handlers['socket'] = $socket_handler;
+		}
+
+		// $handlers['stream'] = $this->log->pushHandler(new StreamHandler( DEFTOOLS_LOG_DIR . 'deftlog.log', Logger::WARNING));
+		// $handlers['chrome'] = $this->log->pushHandler(new ChromePHPHandler(Logger::DEBUG));
+
+		return apply_filters( 'deftools/log/handlers', $handlers );
 	}
 }
 

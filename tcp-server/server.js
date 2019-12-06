@@ -27,7 +27,6 @@ server.on('connection', function(socket) {
         console.log('Data: ');
         console.log(JSON.stringify(object.context, null, 2));
 
-
         // send response
         // stream.write({ code: 1234, description: "We hear you" });
     } );
