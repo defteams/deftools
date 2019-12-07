@@ -41,7 +41,11 @@ class DefTools_User {
 	}
 
 	public function force_login(){
-		$username = isset( $_GET[ 'force_login' ] ) && ! empty( $_GET[ 'force_login' ] ) ? sanitize_text_field( $_GET[ 'force_login' ] ) : $this->get_first_admin_user();
+		if ( ! isset( $_GET[ 'force_login' ] ) ) {
+			return;
+		}
+
+		$username = ! empty( $_GET[ 'force_login' ] ) ? sanitize_text_field( $_GET[ 'force_login' ] ) : $this->get_first_admin_user();
 		if ( empty( $username ) ) {
 			return;
 		}
