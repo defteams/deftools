@@ -203,6 +203,7 @@ final class DefTools {
 			$this->registry->register_object( DefTools_Toolbar::instance() );
 			$this->registry->register_object( DefTools_Logs::instance() );
 			$this->registry->register_object( DefTools_Email::instance() );
+			$this->registry->register_object( DefTools_User::instance() );
 
 			/**
 			 * @dev-note
