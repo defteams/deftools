@@ -127,10 +127,21 @@ final class DefTools {
 	 * Define required constants that can be override on wp-config
 	 */
 	private function define_constants() {
-		 $upload_dir = wp_upload_dir( null, false );
-		 $this->define( 'DEFTOOLS_LOG_DIR', $upload_dir['basedir'] . '/deftools-logs/' );
-		 $this->define( 'DEFTOOLS_LOG_SOCKET_URL', 'tcp://127.0.0.1:8888' );
-		 $this->define( 'DEFTOOLS_LOG_ENABLE_SOCKET_HANDLER', false );
+		$upload_dir = wp_upload_dir( null, false );
+		$this->define( 'DEFTOOLS_LOG_DIR', $upload_dir['basedir'] . '/deftools-logs/' );
+		$this->define( 'DEFTOOLS_LOG_SOCKET_URL', 'tcp://127.0.0.1:8888' );
+		$this->define( 'DEFTOOLS_LOG_ENABLE_SOCKET_HANDLER', false );
+
+		// EMAILS
+		$this->define( 'DEFTOOLS_EMAIL_DEBUG', '' );
+		$this->define( 'DEFTOOLS_EMAIL_ENABLE_SMTP', false );
+		$this->define( 'DEFTOOLS_EMAIL_SET_RETURN_PATH', false ); // Sets $phpmailer->Sender if true
+		$this->define( 'DEFTOOLS_EMAIL_SMTP_HOST', 'smtp.gmail.com' ); // The SMTP mail host
+		$this->define( 'DEFTOOLS_EMAIL_SMTP_PORT', 587 ); // TLS : 587 | SSL : 465
+		$this->define( 'DEFTOOLS_EMAIL_SSL', 'tls' ); // Possible values '', 'ssl', 'tls' - note TLS is not STARTTLS
+		$this->define( 'DEFTOOLS_EMAIL_SMTP_AUTH', true ); // True turns on SMTP authentication, false turns it off
+		$this->define( 'DEFTOOLS_EMAIL_SMTP_USER', '' ); // SMTP authentication username, only used if TEST_SMTP_AUTH is true
+		$this->define( 'DEFTOOLS_EMAIL_SMTP_PASS', '' ); // SMTP authentication password, only used if TEST_SMTP_AUTH is true
 	}
 
 	/**
@@ -210,7 +221,7 @@ final class DefTools {
 			 * Load classes that only needed in admin screens (wp-admin)
 			 */
 			if ( $this->is_request( 'admin' ) ) {
-				// $this->registry->register_object( DefTools_Admin::instance() );
+				$this->registry->register_object( DefTools_Admin::instance() );
 			}
 
 			if ( $this->is_request( 'ajax' ) ) {

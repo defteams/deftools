@@ -51,7 +51,7 @@ class DefTools_Logs {
 	}
 
 	public function add_toolbar_submenus( $submenus ){
-		$log_debug_title = sprintf( __( 'Logs: %s', DefTools::TEXT_DOMAIN ), 'enabled' );
+		$log_debug_title = sprintf( __( 'Logs: %s', DefTools::TEXT_DOMAIN ), !empty( $this->get_handlers() ) ? 'enabled' : 'disabled' );
 		$submenus[] = array( 'title' => $log_debug_title, 'id' => 'deftools-logs', 'href' => '/', 'meta' => array('target' => '_blank') );
 		return $submenus;
 	}
