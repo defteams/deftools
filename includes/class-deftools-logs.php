@@ -47,7 +47,7 @@ class DefTools_Logs {
 	public function __construct(){
 		$this->setup_log_channel();
 
-		add_action('deftools/toolbar/submenus', array( $this, 'add_toolbar_submenus' ), 10, 1);
+		add_filter('deftools/toolbar/submenus', array( $this, 'add_toolbar_submenus' ), 10, 1);
 	}
 
 	public function add_toolbar_submenus( $submenus ){

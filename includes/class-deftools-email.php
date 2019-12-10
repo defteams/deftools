@@ -38,7 +38,7 @@ class DefTools_Email {
 	 */
 	public function __construct(){
 		$this->debug_email = ! empty( DEFTOOLS_EMAIL_DEBUG ) ? DEFTOOLS_EMAIL_DEBUG : deftools_get_option( 'debug_email', false );
-		add_action( 'deftools/toolbar/submenus', array( $this, 'add_toolbar_submenus' ), 10, 1 );
+		add_filter( 'deftools/toolbar/submenus', array( $this, 'add_toolbar_submenus' ), 10, 1 );
 
 		add_action( 'phpmailer_init', array( $this, 'change_phpmailer' ), 10, 1 );
 		add_filter( 'wp_mail', array( $this, 'change_email_args' ), 100, 1 );

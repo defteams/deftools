@@ -132,6 +132,9 @@ final class DefTools {
 		$this->define( 'DEFTOOLS_LOG_SOCKET_URL', 'tcp://127.0.0.1:8888' );
 		$this->define( 'DEFTOOLS_LOG_ENABLE_SOCKET_HANDLER', false );
 
+		// GIT
+		$this->define( 'DEFTOOLS_GIT_DIRS', '' );
+
 		// EMAILS
 		$this->define( 'DEFTOOLS_EMAIL_DEBUG', '' );
 		$this->define( 'DEFTOOLS_EMAIL_ENABLE_SMTP', false );
@@ -215,6 +218,7 @@ final class DefTools {
 			$this->registry->register_object( DefTools_Logs::instance() );
 			$this->registry->register_object( DefTools_Email::instance() );
 			$this->registry->register_object( DefTools_User::instance() );
+			$this->registry->register_object( DefTools_Git::instance() );
 
 			/**
 			 * @dev-note
