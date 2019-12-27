@@ -81,7 +81,8 @@ class DefTools_Git {
 					continue;
 				}
 				$line   = file_get_contents( $head_file );
-				$branch = array_pop( explode('/', $line) );
+				$_exp   = explode('/', $line);
+				$branch = array_pop( $_exp );
 				$issue  = explode( '--', $branch );
 				$branches[ $location ] = current( $issue );
 			}
