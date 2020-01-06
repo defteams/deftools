@@ -159,6 +159,13 @@ final class DefTools {
 			include_once( $this->get_path( 'libraries' ) . 'autoload.php' );
 		}
 
+		/**
+		 * CLI
+		 */
+		if ( defined( 'WP_CLI' ) && WP_CLI ) {
+			require_once( $this->get_path() . '/cli/deft-cli.php' );
+		}
+
 		spl_autoload_register( array( $this, 'autoloader' ) );
 
 		include_once( $this->get_path( 'includes' ) . 'functions.php' );
@@ -395,6 +402,10 @@ final class DefTools {
 		switch ( $type ) {
 			case 'includes':
 				$path = $base . 'includes/';
+				break;
+
+			case 'cli':
+				$path = $base . 'cli/';
 				break;
 
 			case 'libraries':
