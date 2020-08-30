@@ -2,9 +2,9 @@
 /**
  * DefTools_Logs Class.
  *
- * @class       DefTools_Logs
- * @version		1.0.0
- * @author Lafif Astahdziq <hello@lafif.me>
+ * @class   DefTools_Logs
+ * @version 1.0.0
+ * @author  Lafif Astahdziq <hello@lafif.me>
  */
 
 use Monolog\Logger;
@@ -13,93 +13,101 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Handler\ChromePHPHandler;
 use Monolog\Handler\SocketHandler;
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+if (! defined('ABSPATH') ) {
+    exit; // Exit if accessed directly
 }
 
-if ( ! class_exists( 'DefTools_Logs' ) ) :
+if (! class_exists('DefTools_Logs') ) :
 
-/**
- * DefTools_Logs class.
- */
-class DefTools_Logs {
-
-	public $log;
-
-	/**
-     * Singleton method
-     *
-     * @return self
+    /**
+     * DefTools_Logs class.
      */
-	public static function instance(){
-		static $instance = false;
+    class DefTools_Logs
+    {
 
-		if( ! $instance ){
-			$instance = new self();
-		}
+        public $log;
 
-		return $instance;
-	}
+        /**
+         * Singleton method
+         *
+         * @return self
+         */
+        public static function instance()
+        {
+            static $instance = false;
 
-	/**
-	 * Constructor
-	 */
-	public function __construct(){
-		$this->setup_log_channel();
+            if(! $instance ) {
+                  $instance = new self();
+            }
 
-		add_filter('deftools/toolbar/submenus', array( $this, 'add_toolbar_submenus' ), 10, 1);
-	}
+            return $instance;
+        }
 
-	public function add_toolbar_submenus( $submenus ){
-		$log_debug_title = sprintf( __( 'Logs: %s', DefTools::TEXT_DOMAIN ), !empty( $this->get_handlers() ) ? 'enabled' : 'disabled' );
-		$submenus[] = array( 'title' => $log_debug_title, 'id' => 'deftools-logs', 'href' => '/', 'meta' => array('target' => '_blank') );
-		return $submenus;
-	}
+        /**
+         * Constructor
+         */
+        public function __construct()
+        {
+            $this->setup_log_channel();
 
-	public function log( $message, $data = array(), $type = 'debug' ){
-		if ( ! method_exists( $this->log, $type ) || ! is_callable( array( $this->log, $type ) ) ) {
-			return;
-		}
+            add_filter('deftools/toolbar/submenus', array( $this, 'add_toolbar_submenus' ), 10, 1);
+        }
 
-		if ( ! is_array( $data ) ) {
-			$data = array( $data );
-		}
+        public function add_toolbar_submenus( $submenus )
+        {
+            $log_debug_title = sprintf(__('Logs: %s', DefTools::TEXT_DOMAIN), !empty($this->get_handlers()) ? 'enabled' : 'disabled');
+            $submenus[] = array( 'title' => $log_debug_title, 'id' => 'deftools-logs', 'href' => '/', 'meta' => array('target' => '_blank') );
+            return $submenus;
+        }
 
-		// add records to the log
-		try {
-			$this->log->{$type}( $message, array_filter( $data ) );
-		} catch (\Exception $e) {}
-	}
+        public function log( $message, $data = array(), $type = 'debug' )
+        {
+            if (! method_exists($this->log, $type) || ! is_callable(array( $this->log, $type )) ) {
+                return;
+            }
 
-	protected function setup_log_channel() {
-		// create a log channel
-		$_log = new Logger( sprintf( 'DeftLog - %s', get_bloginfo( 'name' ) ) );
-		$handlers = $this->get_handlers();
+            if (! is_array($data) ) {
+                $data = array( $data );
+            }
 
-		if( ! empty( $handlers ) ) {
-			foreach ($handlers as $handler) {
-				$_log->pushHandler($handler);
-			}
-		}
+            // add records to the log
+            try {
+                $this->log->{$type}($message, array_filter($data));
+            } catch (\Exception $e) {
+            }
+        }
 
-		$this->log = $_log;
-	}
+        protected function setup_log_channel()
+        {
+            // create a log channel
+            $_log = new Logger(sprintf('DeftLog - %s', get_bloginfo('name')));
+            $handlers = $this->get_handlers();
 
-	protected function get_handlers() {
-		$handlers = array();
+            if(! empty($handlers) ) {
+                foreach ($handlers as $handler) {
+                    $_log->pushHandler($handler);
+                }
+            }
 
-		if ( DEFTOOLS_LOG_ENABLE_SOCKET_HANDLER ) {
-			$socket_handler = new SocketHandler( DEFTOOLS_LOG_SOCKET_URL );
-			$socket_handler->setPersistent( false ); // Set true to persistent connection.
-			$socket_handler->setFormatter( new JsonFormatter() );
-			$handlers['socket'] = $socket_handler;
-		}
+            $this->log = $_log;
+        }
 
-		// $handlers['stream'] = $this->log->pushHandler(new StreamHandler( DEFTOOLS_LOG_DIR . 'deftlog.log', Logger::WARNING));
-		// $handlers['chrome'] = $this->log->pushHandler(new ChromePHPHandler(Logger::DEBUG));
+        protected function get_handlers()
+        {
+            $handlers = array();
 
-		return apply_filters( 'deftools/log/handlers', $handlers );
-	}
-}
+            if (DEFTOOLS_LOG_ENABLE_SOCKET_HANDLER ) {
+                $socket_handler = new SocketHandler(DEFTOOLS_LOG_SOCKET_URL);
+                $socket_handler->setPersistent(false); // Set true to persistent connection.
+                $socket_handler->setFormatter(new JsonFormatter());
+                $handlers['socket'] = $socket_handler;
+            }
+
+            // $handlers['stream'] = $this->log->pushHandler(new StreamHandler( DEFTOOLS_LOG_DIR . 'deftlog.log', Logger::WARNING));
+            // $handlers['chrome'] = $this->log->pushHandler(new ChromePHPHandler(Logger::DEBUG));
+
+            return apply_filters('deftools/log/handlers', $handlers);
+        }
+    }
 
 endif;
