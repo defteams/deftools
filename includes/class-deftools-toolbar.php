@@ -7,68 +7,65 @@
  * @author  Lafif Astahdziq <hello@lafif.me>
  */
 
-if (! defined('ABSPATH') ) {
-    exit; // Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
 }
 
-if (! class_exists('DefTools_Toolbar') ) :
+if ( ! class_exists( 'DefTools_Toolbar' ) ) :
 
-    /**
-     * DefTools_Toolbar class.
-     */
-    class DefTools_Toolbar
-    {
+	/**
+	 * DefTools_Toolbar class.
+	 */
+	class DefTools_Toolbar {
 
-        public $toolbar_id = 'deftools-admin-bar';
 
-        /**
-         * Singleton method
-         *
-         * @return self
-         */
-        public static function instance()
-        {
-            static $instance = false;
+		public $toolbar_id = 'deftools-admin-bar';
 
-            if(! $instance ) {
-                  $instance = new self();
-            }
+		/**
+		 * Singleton method
+		 *
+		 * @return self
+		 */
+		public static function instance() {
+			static $instance = false;
 
-            return $instance;
-        }
+			if ( ! $instance ) {
+				  $instance = new self();
+			}
 
-        /**
-         * Constructor
-         */
-        public function __construct()
-        {
-            add_action('admin_bar_menu', array( $this, 'add_toolbar_items' ), 100, 1);
-        }
+			return $instance;
+		}
 
-        public function add_toolbar_items( $wp_admin_bar )
-        {
-            if(! current_user_can(DefTools::CAPABILITY) ) {
-                return;
-            }
+		/**
+		 * Constructor
+		 */
+		public function __construct() {
+			add_action( 'admin_bar_menu', array( $this, 'add_toolbar_items' ), 100, 1 );
+		}
 
-            $subs = apply_filters('deftools/toolbar/submenus', array());
-            if (empty($subs) ) {
-                return;
-            }
+		public function add_toolbar_items( $wp_admin_bar ) {
+			if ( ! current_user_can( DefTools::CAPABILITY ) ) {
+				return;
+			}
 
-            $wp_admin_bar->add_menu(
-                array(
-                'id'    => $this->toolbar_id,
-                'title' => __('Deftools', DefTools::TEXT_DOMAIN),
-                'href'  => '#',
-                ) 
-            );
+			$subs = apply_filters( 'deftools/toolbar/submenus', array() );
+			if ( empty( $subs ) ) {
+				return;
+			}
 
-            foreach ( $subs as $sub_toolbar ) {
-                $sub_toolbar['parent'] = $this->toolbar_id;
-                $wp_admin_bar->add_menu($sub_toolbar);
-            }
-        }
-    }
+			$wp_admin_bar->add_menu(
+				array(
+					'id'    => $this->toolbar_id,
+					'title' => __( 'Deftools', DefTools::TEXT_DOMAIN ),
+					'href'  => '#',
+				)
+			);
+
+			foreach ( $subs as $sub_toolbar ) {
+				$sub_toolbar['parent'] = $this->toolbar_id;
+				$wp_admin_bar->add_menu( $sub_toolbar );
+			}
+		}
+	}
 
 endif;

@@ -7,162 +7,160 @@
  * @author  Lafif Astahdziq <hello@lafif.me>
  */
 
-if (! defined('ABSPATH') ) {
-    exit; // Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
 }
 
-if (! class_exists('DefTools_Email') ) :
+if ( ! class_exists( 'DefTools_Email' ) ) :
 
-    /**
-     * DefTools_Email class.
-     */
-    class DefTools_Email
-    {
+	/**
+	 * DefTools_Email class.
+	 */
+	class DefTools_Email {
 
-        /**
-         * Singleton method
-         *
-         * @return self
-         */
-        public static function instance()
-        {
-            static $instance = false;
 
-            if(! $instance ) {
-                  $instance = new self();
-            }
+		/**
+		 * Singleton method
+		 *
+		 * @return self
+		 */
+		public static function instance() {
+			static $instance = false;
 
-            return $instance;
-        }
+			if ( ! $instance ) {
+				  $instance = new self();
+			}
 
-        /**
-         * Constructor
-         */
-        public function __construct()
-        {
-            $this->debug_email = ! empty(DEFTOOLS_EMAIL_DEBUG) ? DEFTOOLS_EMAIL_DEBUG : deftools_get_option('debug_email', false);
-            add_filter('deftools/toolbar/submenus', array( $this, 'add_toolbar_submenus' ), 10, 1);
+			return $instance;
+		}
 
-            add_action('phpmailer_init', array( $this, 'change_phpmailer' ), 10, 1);
-            add_filter('wp_mail', array( $this, 'change_email_args' ), 100, 1);
-            add_action('init', array( $this, 'test_email'), 10);
-        }
+		/**
+		 * Constructor
+		 */
+		public function __construct() {
+			$this->debug_email = ! empty( DEFTOOLS_EMAIL_DEBUG ) ? DEFTOOLS_EMAIL_DEBUG : deftools_get_option( 'debug_email', false );
+			add_filter( 'deftools/toolbar/submenus', array( $this, 'add_toolbar_submenus' ), 10, 1 );
 
-        public function add_toolbar_submenus( $submenus )
-        {
-            $email_debug_title = sprintf(__('Email debug: %s', DefTools::TEXT_DOMAIN), !empty($this->debug_email) ? $this->debug_email : 'disabled');
-            $submenus[] = array( 'title' => $email_debug_title, 'id' => 'deftools-email-debug', 'href' => admin_url('admin.php?page=deftools-settings'), 'meta' => array('target' => '_blank') );
-            return $submenus;
-        }
+			add_action( 'phpmailer_init', array( $this, 'change_phpmailer' ), 10, 1 );
+			add_filter( 'wp_mail', array( $this, 'change_email_args' ), 100, 1 );
+			add_action( 'init', array( $this, 'test_email' ), 10 );
+		}
 
-        public function change_phpmailer( $phpmailer )
-        {
-            if (!$this->is_custom_smtp_enabled() ) {
-                return;
-            }
+		public function add_toolbar_submenus( $submenus ) {
+			$email_debug_title = sprintf( __( 'Email debug: %s', DefTools::TEXT_DOMAIN ), ! empty( $this->debug_email ) ? $this->debug_email : 'disabled' );
+			$submenus[]        = array(
+				'title' => $email_debug_title,
+				'id'    => 'deftools-email-debug',
+				'href'  => admin_url( 'admin.php?page=deftools-settings' ),
+				'meta'  => array( 'target' => '_blank' ),
+			);
+			return $submenus;
+		}
 
-            $phpmailer->Mailer = 'smtp';
-            if (DEFTOOLS_EMAIL_SET_RETURN_PATH ) {
-                $phpmailer->Sender = $phpmailer->From;
-            }
+		public function change_phpmailer( $phpmailer ) {
+			if ( ! $this->is_custom_smtp_enabled() ) {
+				return;
+			}
 
-            $phpmailer->SMTPSecure = DEFTOOLS_EMAIL_SSL;
-            $phpmailer->Host       = DEFTOOLS_EMAIL_SMTP_HOST;
-            $phpmailer->Port       = DEFTOOLS_EMAIL_SMTP_PORT;
+			$phpmailer->Mailer = 'smtp';
+			if ( DEFTOOLS_EMAIL_SET_RETURN_PATH ) {
+				$phpmailer->Sender = $phpmailer->From;
+			}
 
-            if (DEFTOOLS_EMAIL_SMTP_AUTH ) {
-                $phpmailer->SMTPAuth = true;
-                $phpmailer->Username = DEFTOOLS_EMAIL_SMTP_USER;
-                $phpmailer->Password = DEFTOOLS_EMAIL_SMTP_PASS;
-            }
-        }
+			$phpmailer->SMTPSecure = DEFTOOLS_EMAIL_SSL;
+			$phpmailer->Host       = DEFTOOLS_EMAIL_SMTP_HOST;
+			$phpmailer->Port       = DEFTOOLS_EMAIL_SMTP_PORT;
 
-        public function change_email_args( $args )
-        {
-            $debug_email = $this->debug_email;
-            if(empty($debug_email) ) {
-                return $args;
-            }
+			if ( DEFTOOLS_EMAIL_SMTP_AUTH ) {
+				$phpmailer->SMTPAuth = true;
+				$phpmailer->Username = DEFTOOLS_EMAIL_SMTP_USER;
+				$phpmailer->Password = DEFTOOLS_EMAIL_SMTP_PASS;
+			}
+		}
 
-            // Remove BCC
-            $tempheaders = is_array($args['headers']) ? $args['headers'] : explode("\n", str_replace("\r\n", "\n", $args['headers']));
-            $bcc_found = preg_grep("/^BCC.*/", $tempheaders);
+		public function change_email_args( $args ) {
+			$debug_email = $this->debug_email;
+			if ( empty( $debug_email ) ) {
+				return $args;
+			}
 
-            if(!empty($bcc_found)) {
-                foreach ($bcc_found as $key => $bcc_value) {
-                    unset($tempheaders[$key]);
-                }
+			// Remove BCC
+			$tempheaders = is_array( $args['headers'] ) ? $args['headers'] : explode( "\n", str_replace( "\r\n", "\n", $args['headers'] ) );
+			$bcc_found   = preg_grep( '/^BCC.*/', $tempheaders );
 
-                $args['headers'] = implode("\n", $tempheaders);
-            }
+			if ( ! empty( $bcc_found ) ) {
+				foreach ( $bcc_found as $key => $bcc_value ) {
+					unset( $tempheaders[ $key ] );
+				}
 
-            // if ( true ) {
-            //     $args['from'] = DEFTOOLS_EMAIL_SMTP_USER;
-            // }
+				$args['headers'] = implode( "\n", $tempheaders );
+			}
 
-            $to = $args['to'];
-            $args['to'] = $debug_email;
-            $args['subject'] = '['.$to.'] ' . $args['subject'];
+			// if ( true ) {
+			//     $args['from'] = DEFTOOLS_EMAIL_SMTP_USER;
+			// }
 
-            return $args;
-        }
+			$to              = $args['to'];
+			$args['to']      = $debug_email;
+			$args['subject'] = '[' . $to . '] ' . $args['subject'];
 
-        public function test_email()
-        {
-            if(! isset($_GET['test-email']) ) {
-                return;
-            }
+			return $args;
+		}
 
-            global $phpmailer;
+		public function test_email() {
+			if ( ! isset( $_GET['test-email'] ) ) {
+				return;
+			}
 
-            if (!is_object($phpmailer) || !is_a($phpmailer, 'PHPMailer') ) {
-                include_once ABSPATH . WPINC . '/class-phpmailer.php';
-                include_once ABSPATH . WPINC . '/class-smtp.php';
-                $phpmailer = new PHPMailer(true);
-            }
+			global $phpmailer;
 
-            // Set up the mail variables
-            $to      = ( !empty($_GET['test-email'])) ? $_GET['test-email'] : get_option('admin_email');
-            $subject = 'Email Test';
-            $message = sprintf('Test email from %s', get_bloginfo('name'));
+			if ( ! is_object( $phpmailer ) || ! is_a( $phpmailer, 'PHPMailer' ) ) {
+				include_once ABSPATH . WPINC . '/class-phpmailer.php';
+				include_once ABSPATH . WPINC . '/class-smtp.php';
+				$phpmailer = new PHPMailer( true );
+			}
 
-            // SMTP DEBUG
-            if(isset($_GET['debug']) && ( 'true' == $_GET['debug'] ) ) {
-                // Set SMTPDebug to true
-                $phpmailer->SMTPDebug = true;
-            }
+			// Set up the mail variables
+			$to      = ( ! empty( $_GET['test-email'] ) ) ? $_GET['test-email'] : get_option( 'admin_email' );
+			$subject = 'Email Test';
+			$message = sprintf( 'Test email from %s', get_bloginfo( 'name' ) );
 
-            // Start output buffering to grab smtp debugging output
-            ob_start();
+			// SMTP DEBUG
+			if ( isset( $_GET['debug'] ) && ( 'true' == $_GET['debug'] ) ) {
+				// Set SMTPDebug to true
+				$phpmailer->SMTPDebug = true;
+			}
 
-            // Send the test mail
-            $send = wp_mail($to, $subject, $message);
+			// Start output buffering to grab smtp debugging output
+			ob_start();
 
-            // Output the response
-            ?>
-        <p>Email <?php echo ($send) ? 'berhasil' : 'gagal'; ?> dikirim ke <?php echo $to; ?>.</p>
+			// Send the test mail
+			$send = wp_mail( $to, $subject, $message );
 
-            <?php
-            $message = ob_get_clean();
+			// Output the response
+			?>
+		<p>Email <?php echo ( $send ) ? 'berhasil' : 'gagal'; ?> dikirim ke <?php echo $to; ?>.</p>
 
-            // Destroy $phpmailer so it doesn't cause issues later
-            unset($phpmailer);
+			<?php
+			$message = ob_get_clean();
 
-            wp_die($message, 'Test Email');
-        }
+			// Destroy $phpmailer so it doesn't cause issues later
+			unset( $phpmailer );
 
-        protected function is_custom_smtp_enabled()
-        {
-            if (!DEFTOOLS_EMAIL_ENABLE_SMTP ) {
-                return false;
-            }
+			wp_die( $message, 'Test Email' );
+		}
 
-            if (DEFTOOLS_EMAIL_SMTP_AUTH && ( empty(DEFTOOLS_EMAIL_SMTP_USER) || empty(DEFTOOLS_EMAIL_SMTP_PASS) ) ) {
-                return false;
-            }
+		protected function is_custom_smtp_enabled() {
+			if ( ! DEFTOOLS_EMAIL_ENABLE_SMTP ) {
+				return false;
+			}
 
-            return true;
-        }
-    }
+			if ( DEFTOOLS_EMAIL_SMTP_AUTH && ( empty( DEFTOOLS_EMAIL_SMTP_USER ) || empty( DEFTOOLS_EMAIL_SMTP_PASS ) ) ) {
+				return false;
+			}
+
+			return true;
+		}
+	}
 
 endif;

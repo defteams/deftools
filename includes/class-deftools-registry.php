@@ -4,144 +4,137 @@
  */
 
 // Exit if accessed directly.
-if (! defined('ABSPATH') ) {
-    exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 
-if (! class_exists('DefTools_Registry') ) :
+if ( ! class_exists( 'DefTools_Registry' ) ) :
 
-    /**
-     * DefTools_Registry
-     *
-     * @since 1.0.0
-     */
-    class DefTools_Registry
-    {
+	/**
+	 * DefTools_Registry
+	 *
+	 * @since 1.0.0
+	 */
+	class DefTools_Registry {
 
-        /**
-         * Registered objects.
-         *
-         * @since 1.0.0
-         *
-         * @var array
-         */
-        private $objects;
 
-        /**
-         * Create class object.
-         *
-         * @since 1.0.0
-         */
-        public function __construct()
-        {
-            $this->objects = array();
-        }
+		/**
+		 * Registered objects.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @var array
+		 */
+		private $objects;
 
-        /**
-         * Return a registered object.
-         *
-         * @since 1.0.0
-         *
-         * @param  string $class The name of the class.
-         * @return object|false Returns an object if the class exists, otherwise returns false.
-         */
-        public function get( $class )
-        {
-            $class_key = $this->get_class_key($class);
+		/**
+		 * Create class object.
+		 *
+		 * @since 1.0.0
+		 */
+		public function __construct() {
+			$this->objects = array();
+		}
 
-            if (! array_key_exists($class_key, $this->objects) ) {
-                $this->objects[ $class_key ] = $this->get_class_instance($this->get_class_name($class));
-            }
+		/**
+		 * Return a registered object.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param  string $class The name of the class.
+		 * @return object|false Returns an object if the class exists, otherwise returns false.
+		 */
+		public function get( $class ) {
+			$class_key = $this->get_class_key( $class );
 
-            return $this->objects[ $class_key ];
-        }
+			if ( ! array_key_exists( $class_key, $this->objects ) ) {
+				$this->objects[ $class_key ] = $this->get_class_instance( $this->get_class_name( $class ) );
+			}
 
-        /**
-         * Checks whether an object has already been registered.
-         *
-         * @since 1.0.0
-         *
-         * @param  string $class The name of the class.
-         * @return boolean
-         */
-        public function has( $class )
-        {
-            return array_key_exists($this->get_class_key($class), $this->objects);
-        }
+			return $this->objects[ $class_key ];
+		}
 
-        /**
-         * Register an object that has already been instantiated.
-         *
-         * @since 1.0.0
-         *
-         * @param  object $object The object to be registered.
-         * @return void
-         */
-        public function register_object( $object )
-        {
-            $class     = get_class($object);
-            $class_key = $this->get_class_key($class);
+		/**
+		 * Checks whether an object has already been registered.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param  string $class The name of the class.
+		 * @return boolean
+		 */
+		public function has( $class ) {
+			return array_key_exists( $this->get_class_key( $class ), $this->objects );
+		}
 
-            $this->objects[ $class_key ] = $object;
-        }
+		/**
+		 * Register an object that has already been instantiated.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param  object $object The object to be registered.
+		 * @return void
+		 */
+		public function register_object( $object ) {
+			$class     = get_class( $object );
+			$class_key = $this->get_class_key( $class );
 
-        /**
-         * Given a class name, returns the key for that class.
-         *
-         * @since 1.0.0
-         *
-         * @param  string $class The class name.
-         * @return string
-         */
-        protected function get_class_key( $class )
-        {
-            if (false === strpos($class, 'DefTools_') ) {
-                return $class;
-            }
+			$this->objects[ $class_key ] = $object;
+		}
 
-            return strtolower(str_replace('DefTools_', '', $class));
-        }
+		/**
+		 * Given a class name, returns the key for that class.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param  string $class The class name.
+		 * @return string
+		 */
+		protected function get_class_key( $class ) {
+			if ( false === strpos( $class, 'DefTools_' ) ) {
+				return $class;
+			}
 
-        /**
-         * Return a sanitized class name.
-         *
-         * @since 1.0.0
-         *
-         * @param  string $class_key The class to return.
-         * @return string
-         */
-        protected function get_class_name( $class_key )
-        {
-            if (0 === strpos($class_key, 'DefTools_') ) {
-                return $class_key;
-            }
+			return strtolower( str_replace( 'DefTools_', '', $class ) );
+		}
 
-            $class_words = str_replace('_', ' ', $class_key);
-            $class_words = ucwords($class_words);
-            return 'DefTools_' . str_replace(' ', '_', $class_words);
-        }
+		/**
+		 * Return a sanitized class name.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param  string $class_key The class to return.
+		 * @return string
+		 */
+		protected function get_class_name( $class_key ) {
+			if ( 0 === strpos( $class_key, 'DefTools_' ) ) {
+				return $class_key;
+			}
 
-        /**
-         * Return the class instance.
-         *
-         * @since 1.0.0
-         *
-         * @param  string $class The class name.
-         * @return object
-         */
-        protected function get_class_instance( $class )
-        {
-            if (! class_exists($class) ) {
-                /* translators: %s: class name */
-                wp_die(sprintf(_x('Class %s does not exist.', 'error message when non-existent class is called', DefTools::TEXT_DOMAIN), $class));
-            }
+			$class_words = str_replace( '_', ' ', $class_key );
+			$class_words = ucwords( $class_words );
+			return 'DefTools_' . str_replace( ' ', '_', $class_words );
+		}
 
-            if(method_exists($class, 'instance') ) {
-                return $class::instance();
-            }
+		/**
+		 * Return the class instance.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param  string $class The class name.
+		 * @return object
+		 */
+		protected function get_class_instance( $class ) {
+			if ( ! class_exists( $class ) ) {
+				/* translators: %s: class name */
+				wp_die( sprintf( _x( 'Class %s does not exist.', 'error message when non-existent class is called', DefTools::TEXT_DOMAIN ), $class ) );
+			}
 
-            return new $class;
-        }
-    }
+			if ( method_exists( $class, 'instance' ) ) {
+				return $class::instance();
+			}
+
+			return new $class;
+		}
+	}
 
 endif;
