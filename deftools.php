@@ -163,7 +163,7 @@ if ( ! class_exists( 'DefTools' ) ) :
 			 * CLI
 			 */
 			if ( defined( 'WP_CLI' ) && WP_CLI ) {
-				require_once( $this->get_path() . '/cli/deft-cli.php' );
+				require_once( $this->get_path() . '/cli/class-deftools-cli.php' );
 			}
 
 			spl_autoload_register( array( $this, 'autoloader' ) );
