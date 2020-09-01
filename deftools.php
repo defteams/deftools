@@ -196,7 +196,7 @@ if ( ! class_exists( 'DefTools' ) ) :
 		public function start() {
 
 			/* If we've already started (i.e. run this function once before), do not pass go. */
-			if ( did_action( 'deftools_start' ) || current_filter() == 'deftools_start' ) {
+			if ( did_action( 'deftools_start' ) || current_filter() === 'deftools_start' ) {
 				return;
 			}
 
@@ -409,7 +409,7 @@ if ( ! class_exists( 'DefTools' ) ) :
 					break;
 
 				case 'libraries':
-					$path = $base . 'includes/libraries/';
+					$path = $base . 'libraries/';
 					break;
 
 				case 'abstracts':
