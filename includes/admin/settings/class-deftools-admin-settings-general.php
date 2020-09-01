@@ -59,12 +59,12 @@ if ( ! class_exists( 'DefTools_Admin_Settings_General' ) ) :
 					'value'    => $this->id,
 				),
 				'section_email'        => array(
-					'title' => __( 'Email Debug', DefTools::TEXT_DOMAIN ),
+					'title' => __( 'Email Debug', 'deftools' ),
 					'type'  => 'heading',
 					// 'priority'          => 10,
 				),
 				'debug_email'       => array(
-					'title'        => __( 'Email', DefTools::TEXT_DOMAIN ),
+					'title'        => __( 'Email', 'deftools' ),
 					'type'         => 'email',
 					'force_value'  => ! empty( DEFTOOLS_EMAIL_DEBUG ) ? DEFTOOLS_EMAIL_DEBUG : false,
 					'attrs'        => array(

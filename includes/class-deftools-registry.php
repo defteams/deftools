@@ -126,7 +126,7 @@ if ( ! class_exists( 'DefTools_Registry' ) ) :
 		protected function get_class_instance( $class ) {
 			if ( ! class_exists( $class ) ) {
 				/* translators: %s: class name */
-				wp_die( sprintf( _x( 'Class %s does not exist.', 'error message when non-existent class is called', DefTools::TEXT_DOMAIN ), $class ) );
+				wp_die( sprintf( _x( 'Class %s does not exist.', 'error message when non-existent class is called', 'deftools' ), $class ) );
 			}
 
 			if ( method_exists( $class, 'instance' ) ) {

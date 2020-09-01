@@ -47,7 +47,7 @@ if ( ! class_exists( 'DefTools_Email' ) ) :
 		}
 
 		public function add_toolbar_submenus( $submenus ) {
-			$email_debug_title = sprintf( __( 'Email debug: %s', DefTools::TEXT_DOMAIN ), ! empty( $this->debug_email ) ? $this->debug_email : 'disabled' );
+			$email_debug_title = sprintf( __( 'Email debug: %s', 'deftools' ), ! empty( $this->debug_email ) ? $this->debug_email : 'disabled' );
 			$submenus[]        = array(
 				'title' => $email_debug_title,
 				'id'    => 'deftools-email-debug',

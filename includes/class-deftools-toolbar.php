@@ -56,7 +56,7 @@ if ( ! class_exists( 'DefTools_Toolbar' ) ) :
 			$wp_admin_bar->add_menu(
 				array(
 					'id'    => $this->toolbar_id,
-					'title' => __( 'Deftools', DefTools::TEXT_DOMAIN ),
+					'title' => __( 'Deftools', 'deftools' ),
 					'href'  => '#',
 				)
 			);

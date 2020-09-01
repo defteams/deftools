@@ -81,7 +81,7 @@ class DefTools_Admin_Settings {
 		 * @param string[] $tabs List of tabs in key=>label format.
 		 */
 		return apply_filters( 'deftools-settings_tabs', array(
-			'general'  => __( 'General', DefTools::TEXT_DOMAIN ),
+			'general'  => __( 'General', 'deftools' ),
 		) );
 
 	}
@@ -116,7 +116,7 @@ class DefTools_Admin_Settings {
 			$tabs = deftools_add_settings_tab(
 				$tabs,
 				'extensions',
-				__( 'Extensions', DefTools::TEXT_DOMAIN ),
+				__( 'Extensions', 'deftools' ),
 				array(
 					'index' => 4,
 				)
@@ -249,7 +249,7 @@ class DefTools_Admin_Settings {
 		$values = apply_filters( 'deftools_save_settings', $values, $new_values, $old_values );
 
 		if( md5( maybe_serialize( $values ) ) !== md5( maybe_serialize( $old_values ) ) ){
-			deftools()->get( 'admin_notices' )->add_notice( __( 'Settings saved', DefTools::TEXT_DOMAIN ), 'success' );
+			deftools()->get( 'admin_notices' )->add_notice( __( 'Settings saved', 'deftools' ), 'success' );
 		}
 
 		return $values;

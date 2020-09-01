@@ -54,7 +54,7 @@ if ( ! class_exists( 'DefTools_Git' ) ) :
 			$git_submenu = array();
 			if ( count( $branches ) > 1 ) {
 				$git_submenu = array(
-					'title' => __( 'Git Info', DefTools::TEXT_DOMAIN ),
+					'title' => __( 'Git Info', 'deftools' ),
 					'id'    => 'deftools-git-info',
 					'href'  => '#',
 				);
@@ -69,7 +69,7 @@ if ( ! class_exists( 'DefTools_Git' ) ) :
 						'href'  => '#',
 					);
 				} else {
-					$git_title   = sprintf( __( 'Git Info: %1$s:%2$s', DefTools::TEXT_DOMAIN ), $location, $branch );
+					$git_title   = sprintf( __( 'Git Info: %1$s:%2$s', 'deftools' ), $location, $branch );
 					$git_submenu = array(
 						'title' => $git_title,
 						'id'    => 'deftools-git-info',
