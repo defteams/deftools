@@ -19,5 +19,5 @@ wp_editor( $value, sprintf( 'deftools-settings_%s', implode( '_', $view_args['ke
 
 if ( isset( $view_args['help'] ) ) : ?>
 	<div class="deftools-help"><?php echo $view_args['help']; ?></div>
-<?php
+	<?php
 endif;

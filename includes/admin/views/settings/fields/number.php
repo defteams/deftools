@@ -23,5 +23,5 @@ $max = isset( $view_args['max'] ) ? 'max="' . $view_args['max'] . '"' : '';
 	/>
 <?php if ( isset( $view_args['help'] ) ) : ?>
 	<div class="deftools-help"><?php echo $view_args['help']; ?></div>
-<?php
+	<?php
 endif;

@@ -22,5 +22,5 @@ $value   = deftools_get_option( $view_args['key'], $default );
 </ul>
 <?php if ( isset( $view_args['help'] ) ) : ?>
 	<div class="deftools-help"><?php echo $view_args['help']; ?></div>
-<?php
+	<?php
 endif;

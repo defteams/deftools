@@ -3,7 +3,7 @@
  * DefTools_Admin_Settings Class.
  *
  * @class       DefTools_Admin_Settings
- * @version		1.0.0
+ * @version     1.0.0
  * @author Lafif Astahdziq <hello@lafif.me>
  */
 
@@ -35,14 +35,14 @@ class DefTools_Admin_Settings {
 	private $pages;
 
 	/**
-     * Singleton method
-     *
-     * @return self
-     */
-	public static function instance(){
+	 * Singleton method
+	 *
+	 * @return self
+	 */
+	public static function instance() {
 		static $instance = false;
 
-		if( ! $instance ){
+		if ( ! $instance ) {
 			$instance = new self();
 		}
 
@@ -52,7 +52,7 @@ class DefTools_Admin_Settings {
 	/**
 	 * Constructor
 	 */
-	public function __construct(){
+	public function __construct() {
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 
 		/**
@@ -61,7 +61,7 @@ class DefTools_Admin_Settings {
 		add_filter( 'deftools-settings_tab_fields_general', array( DefTools_Admin_Settings_General::instance(), 'add_fields' ), 5 );
 	}
 
-	public function onload_admin_page(){
+	public function onload_admin_page() {
 		wp_enqueue_style( 'admin-deftools' );
 	}
 
@@ -80,9 +80,12 @@ class DefTools_Admin_Settings {
 		 *
 		 * @param string[] $tabs List of tabs in key=>label format.
 		 */
-		return apply_filters( 'deftools-settings_tabs', array(
-			'general'  => __( 'General', 'deftools' ),
-		) );
+		return apply_filters(
+			'deftools-settings_tabs',
+			array(
+				'general' => __( 'General', 'deftools' ),
+			)
+		);
 
 	}
 
@@ -163,10 +166,14 @@ class DefTools_Admin_Settings {
 			return;
 		}
 
-		register_setting( 'deftools-settings', 'deftools-settings', array(
-			'sanitize_callback' => array( $this, 'sanitize_settings' ),
-			'show_in_rest'      => false,
-		) );
+		register_setting(
+			'deftools-settings',
+			'deftools-settings',
+			array(
+				'sanitize_callback' => array( $this, 'sanitize_settings' ),
+				'show_in_rest'      => false,
+			)
+		);
 
 		$fields = $this->get_fields();
 
@@ -248,7 +255,7 @@ class DefTools_Admin_Settings {
 		 */
 		$values = apply_filters( 'deftools_save_settings', $values, $new_values, $old_values );
 
-		if( md5( maybe_serialize( $values ) ) !== md5( maybe_serialize( $old_values ) ) ){
+		if ( md5( maybe_serialize( $values ) ) !== md5( maybe_serialize( $old_values ) ) ) {
 			deftools()->get( 'admin_notices' )->add_notice( __( 'Settings saved', 'deftools' ), 'success' );
 		}
 
@@ -283,7 +290,7 @@ class DefTools_Admin_Settings {
 	public function render_field( $args ) {
 		$field_type = isset( $args['type'] ) ? $args['type'] : 'text';
 
-		$args[ 'settings' ] = 'deftools-settings';
+		$args['settings'] = 'deftools-settings';
 
 		deftools_admin_view( 'settings/fields/' . $field_type, $args );
 	}
@@ -572,20 +579,23 @@ class DefTools_Admin_Settings {
 		return array_key_exists( $composite_key, $this->get_dynamic_groups() );
 	}
 
-	public function render_page(){
+	public function render_page() {
 
 		$active_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : 'general';
 		$group      = isset( $_GET['group'] ) ? $_GET['group'] : $active_tab;
 		$sections   = $this->get_sections();
 
-		deftools_admin_view( 'settings/settings', array(
-			'active_tab' => $active_tab,
-			'group' => $group,
-			'sections' => $sections,
-		) );
+		deftools_admin_view(
+			'settings/settings',
+			array(
+				'active_tab' => $active_tab,
+				'group'      => $group,
+				'sections'   => $sections,
+			)
+		);
 	}
 
-	public function return_old_values( $values, $new_values, $old_values ){
+	public function return_old_values( $values, $new_values, $old_values ) {
 		return $old_values;
 	}
 }

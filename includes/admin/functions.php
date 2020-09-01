@@ -24,9 +24,9 @@ function deftools_admin_view( $view, $view_args = array() ) {
 
 	$base_path = deftools()->get_path( 'admin_view' );
 
-	if( isset($view_args[ 'base_path' ]) ){
-		$base_path = $view_args[ 'base_path' ];
-		unset($view_args[ 'base_path' ]);
+	if ( isset( $view_args['base_path'] ) ) {
+		$base_path = $view_args['base_path'];
+		unset( $view_args['base_path'] );
 	}
 
 	if ( ! empty( $view_args ) && is_array( $view_args ) ) {
@@ -42,7 +42,7 @@ function deftools_admin_view( $view, $view_args = array() ) {
 	 * @param string $view      The view.
 	 * @param array  $view_args View args.
 	 */
-	$filename  = apply_filters( 'deftools_admin_view_path', $base_path . $view . '.php', $view, $view_args );
+	$filename = apply_filters( 'deftools_admin_view_path', $base_path . $view . '.php', $view, $view_args );
 
 	ob_start();
 
@@ -55,23 +55,24 @@ function deftools_admin_view( $view, $view_args = array() ) {
 
 
 
-function deftools_admin_view_html( $view, $view_args = array() ){
+function deftools_admin_view_html( $view, $view_args = array() ) {
 	ob_start();
 	deftools_admin_view( $view, $view_args );
 	return ob_get_clean();
 }
 
-function deftools_is_admin_page( $id = false ){
-	$screen = get_current_screen();
+function deftools_is_admin_page( $id = false ) {
+	$screen           = get_current_screen();
 	$deftools_screens = deftools()->get( 'admin_pages' )->get_screen_id();
 
-	if( !$screen )
+	if ( ! $screen ) {
 		return false;
+	}
 
-	if( $id ){
+	if ( $id ) {
 		$is_page = deftools()->get( 'admin_pages' )->get_screen_id( $id ) == $screen->id;
 	} else {
-		$is_page = in_array($screen->id, $deftools_screens );
+		$is_page = in_array( $screen->id, $deftools_screens );
 	}
 
 	return apply_filters( 'deftools_is_admin_page', $is_page, $id );
@@ -131,7 +132,7 @@ function deftools_get_arbitrary_attributes( $field ) {
 			continue;
 		}
 
-		$output       .= " $key=\"$escaped_value\" ";
+		$output .= " $key=\"$escaped_value\" ";
 	}
 
 	return apply_filters( 'deftools_arbitrary_field_attributes', $output );
@@ -167,7 +168,7 @@ function deftools_do_settings_fields( $page, $section ) {
 			$class .= ' tr-' . esc_attr( $field['args']['class'] );
 		}
 
-		if ( isset( $field['args']['type']) && $field['args']['type'] == 'hidden' ) {
+		if ( isset( $field['args']['type'] ) && $field['args']['type'] == 'hidden' ) {
 			$class .= ' hidden';
 		}
 

@@ -23,5 +23,5 @@ $rows = isset( $field['rows'] ) ? $field['rows'] : 4;
 
 	<div class="deftools-help"><?php echo $view_args['help']; ?></div>
 
-<?php
+	<?php
 endif;

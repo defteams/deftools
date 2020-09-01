@@ -28,12 +28,12 @@ if ( empty( $value ) ) {
 			</optgroup>
 		<?php else : ?>
 			<option value="<?php echo esc_attr( $key ); ?>" <?php selected( in_array( $key, $value ) ); ?>><?php echo $option; ?></option>
-		<?php
+			<?php
 		endif;
 	endforeach
 	?>
 </select>
 <?php if ( isset( $view_args['help'] ) ) : ?>
 	<div class="deftools-help"><?php echo $view_args['help']; ?></div>
-<?php
+	<?php
 endif;

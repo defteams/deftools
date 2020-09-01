@@ -3,7 +3,7 @@
  * DefTools_Admin_Notices Class.
  *
  * @class       DefTools_Admin_Notices
- * @version		1.0.0
+ * @version     1.0.0
  * @author Lafif Astahdziq <hello@lafif.me>
  */
 
@@ -42,14 +42,14 @@ if ( ! class_exists( 'DefTools_Admin_Notices' ) ) :
 		}
 
 		/**
-	     * Singleton method
-	     *
-	     * @return self
-	     */
-		public static function instance(){
+		 * Singleton method
+		 *
+		 * @return self
+		 */
+		public static function instance() {
 			static $instance = false;
 
-			if( ! $instance ){
+			if ( ! $instance ) {
 				$instance = new self();
 			}
 
@@ -143,7 +143,7 @@ if ( ! class_exists( 'DefTools_Admin_Notices' ) ) :
 		 *
 		 * @param   string  $message
 		 * @param   string  $key         Optional. If not set, next numeric key is used.
-		 * @param 	boolean $dismissible Optional. Set to true by default.
+		 * @param   boolean $dismissible Optional. Set to true by default.
 		 * @return  void
 		 */
 		public function add_version_update( $message, $key = false, $dismissible = true ) {
@@ -172,10 +172,10 @@ if ( ! class_exists( 'DefTools_Admin_Notices' ) ) :
 		 *
 		 * @since   1.0.0
 		 *
-		 * @param 	string 	$notice
-		 * @param 	string  $type
-		 * @param 	boolean $dismissible
-		 * @param 	string  $notice_key
+		 * @param   string  $notice
+		 * @param   string  $type
+		 * @param   boolean $dismissible
+		 * @param   string  $notice_key
 		 * @return  void
 		 */
 		public function render_notice( $notice, $type, $dismissible = false, $notice_key = '' ) {
@@ -183,23 +183,23 @@ if ( ! class_exists( 'DefTools_Admin_Notices' ) ) :
 			$class = 'notice deftools-notice';
 
 			switch ( $type ) {
-				case 'error' :
+				case 'error':
 					$class .= ' notice-error';
 					break;
 
-				case 'warning' :
+				case 'warning':
 					$class .= ' notice-warning';
 					break;
 
-				case 'success' :
+				case 'success':
 					$class .= ' updated';
 					break;
 
-				case 'info' :
+				case 'info':
 					$class .= ' notice-info';
 					break;
 
-				case 'version' :
+				case 'version':
 					$class .= ' deftools-upgrade-notice';
 					break;
 			}
@@ -208,7 +208,8 @@ if ( ! class_exists( 'DefTools_Admin_Notices' ) ) :
 				$class .= ' is-dismissible';
 			}
 
-			printf( '<div class="%s" %s><p>%s</p></div>',
+			printf(
+				'<div class="%s" %s><p>%s</p></div>',
 				esc_attr( $class ),
 				strlen( $notice_key ) ? 'data-notice="' . esc_attr( $notice_key ) . '"' : '',
 				$notice
@@ -236,7 +237,7 @@ if ( ! class_exists( 'DefTools_Admin_Notices' ) ) :
 		 *
 		 * @since   1.0.0
 		 *
-		 * @return	void
+		 * @return  void
 		 */
 		public function shutdown() {
 			set_transient( 'deftools_notices', $this->notices );
@@ -249,7 +250,7 @@ if ( ! class_exists( 'DefTools_Admin_Notices' ) ) :
 		 *
 		 * @since   1.0.0
 		 *
-		 * @return	void
+		 * @return  void
 		 */
 		public function load_notices() {
 			$this->notices = get_transient( 'deftools_notices' );
