@@ -62,7 +62,7 @@ if ( ! class_exists( 'DefTools_Logs' ) ) :
 			return $submenus;
 		}
 
-		public function log( $message, $data = array(), $type = 'debug' ) {
+		public function log( $message, $data = array(), $type = 'debug', $use_trace = true ) {
 			if ( ! method_exists( $this->log, $type ) || ! is_callable( array( $this->log, $type ) ) ) {
 				return;
 			}
@@ -71,11 +71,14 @@ if ( ! class_exists( 'DefTools_Logs' ) ) :
 				$data = array( $data );
 			}
 
+			if ( $use_trace ) {
+				$data['trace'] = array_slice( debug_backtrace(), 2 ); // Exclude this method and `deftlog()` call from backtrace.
+			}
+
 			// add records to the log
 			try {
 				$this->log->{$type}( $message, array_filter( $data ) );
-			} catch ( \Exception $e ) {
-			}
+			} catch ( \Exception $e ) {}
 		}
 
 		protected function setup_log_channel() {
