@@ -36,7 +36,7 @@ if ( ! class_exists( 'DefTools_Logs' ) ) :
 			static $instance = false;
 
 			if ( ! $instance ) {
-				  $instance = new self();
+				$instance = new self();
 			}
 
 			return $instance;
@@ -77,8 +77,10 @@ if ( ! class_exists( 'DefTools_Logs' ) ) :
 
 			// add records to the log
 			try {
-				$this->log->{$type}( $message, array_filter( $data ) );
-			} catch ( \Exception $e ) {}
+				$this->log->{$type}( $message, $data );
+			} catch ( \Exception $e ) {
+
+			}
 		}
 
 		protected function setup_log_channel() {
