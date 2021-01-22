@@ -27,6 +27,8 @@ if ( ! class_exists( 'DefTools_Logs' ) ) :
 
 		public $log;
 
+		protected $handlers;
+
 		/**
 		 * Singleton method
 		 *
@@ -46,13 +48,14 @@ if ( ! class_exists( 'DefTools_Logs' ) ) :
 		 * Constructor
 		 */
 		public function __construct() {
+			$this->handlers = $this->get_handlers();
 			$this->setup_log_channel();
 
 			add_filter( 'deftools/toolbar/submenus', array( $this, 'add_toolbar_submenus' ), 10, 1 );
 		}
 
 		public function add_toolbar_submenus( $submenus ) {
-			$log_debug_title = sprintf( __( 'Logs: %s', 'deftools' ), ! empty( $this->get_handlers() ) ? 'enabled' : 'disabled' );
+			$log_debug_title = sprintf( __( 'Logs: %s', 'deftools' ), ! empty( $this->handlers ) ? 'enabled' : 'disabled' );
 			$submenus[]      = array(
 				'title' => $log_debug_title,
 				'id'    => 'deftools-logs',
@@ -85,11 +88,10 @@ if ( ! class_exists( 'DefTools_Logs' ) ) :
 
 		protected function setup_log_channel() {
 			// create a log channel
-			$_log     = new Logger( sprintf( 'DeftLog - %s', get_bloginfo( 'name' ) ) );
-			$handlers = $this->get_handlers();
+			$_log = new Logger( sprintf( 'DeftLog - %s', get_bloginfo( 'name' ) ) );
 
-			if ( ! empty( $handlers ) ) {
-				foreach ( $handlers as $handler ) {
+			if ( ! empty( $this->handlers ) ) {
+				foreach ( $this->handlers as $handler ) {
 					$_log->pushHandler( $handler );
 				}
 			}

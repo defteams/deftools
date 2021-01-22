@@ -28,7 +28,7 @@ if ( ! class_exists( 'DefTools_Email' ) ) :
 			static $instance = false;
 
 			if ( ! $instance ) {
-				  $instance = new self();
+				$instance = new self();
 			}
 
 			return $instance;
@@ -41,23 +41,37 @@ if ( ! class_exists( 'DefTools_Email' ) ) :
 			$this->debug_email = ! empty( DEFTOOLS_EMAIL_DEBUG ) ? DEFTOOLS_EMAIL_DEBUG : deftools_get_option( 'debug_email', false );
 			add_filter( 'deftools/toolbar/submenus', array( $this, 'add_toolbar_submenus' ), 10, 1 );
 
-			add_action( 'phpmailer_init', array( $this, 'change_phpmailer' ), 10, 1 );
+			add_action( 'phpmailer_init', array( $this, 'change_phpmailer' ), 100, 1 );
 			add_filter( 'wp_mail', array( $this, 'change_email_args' ), 100, 1 );
 			add_action( 'init', array( $this, 'test_email' ), 10 );
 		}
 
 		public function add_toolbar_submenus( $submenus ) {
-			$email_debug_title = sprintf( __( 'Email debug: %s', 'deftools' ), ! empty( $this->debug_email ) ? $this->debug_email : 'disabled' );
-			$submenus[]        = array(
-				'title' => $email_debug_title,
-				'id'    => 'deftools-email-debug',
-				'href'  => admin_url( 'admin.php?page=deftools-settings' ),
-				'meta'  => array( 'target' => '_blank' ),
-			);
+			// var_dump( $this->is_email_disabled() ); exit();
+			if ( $this->is_email_disabled() ) {
+				$submenus[]        = array(
+					'title' => __( 'Email: disabled', 'deftools' ),
+					'id'    => 'deftools-email-disabled',
+					'href'  => '#',
+				);
+			} else {
+				$email_debug_title = sprintf( __( 'Email debug: %s', 'deftools' ), ! empty( $this->debug_email ) ? $this->debug_email : 'disabled' );
+				$submenus[]        = array(
+					'title' => $email_debug_title,
+					'id'    => 'deftools-email-debug',
+					'href'  => admin_url( 'admin.php?page=deftools-settings' ),
+					'meta'  => array( 'target' => '_blank' ),
+				);
+			}
 			return $submenus;
 		}
 
-		public function change_phpmailer( $phpmailer ) {
+		public function change_phpmailer( &$phpmailer ) {
+			if ( $this->is_email_disabled() ) {
+				$phpmailer = new DefTools_Fake_PHPMailer();
+				return;
+			}
+
 			if ( ! $this->is_custom_smtp_enabled() ) {
 				return;
 			}
@@ -79,8 +93,17 @@ if ( ! class_exists( 'DefTools_Email' ) ) :
 		}
 
 		public function change_email_args( $args ) {
-			$debug_email = $this->debug_email;
-			if ( empty( $debug_email ) ) {
+			if ( $this->is_email_disabled() ) {
+				return array(
+					'to' => null,
+					'subject' => null,
+					'message' => null,
+					'headers' => null,
+					'attachments' => null,
+				);
+			}
+
+			if ( empty( $this->debug_email ) ) {
 				return $args;
 			}
 
@@ -101,7 +124,7 @@ if ( ! class_exists( 'DefTools_Email' ) ) :
 			// }
 
 			$to              = $args['to'];
-			$args['to']      = $debug_email;
+			$args['to']      = $this->debug_email;
 			$args['subject'] = '[' . $to . '] ' . $args['subject'];
 
 			return $args;
@@ -148,6 +171,10 @@ if ( ! class_exists( 'DefTools_Email' ) ) :
 			unset( $phpmailer );
 
 			wp_die( $message, 'Test Email' );
+		}
+
+		public function is_email_disabled() {
+			return defined( 'DEFTOOLS_DISABLE_EMAIL' ) && DEFTOOLS_DISABLE_EMAIL;
 		}
 
 		protected function is_custom_smtp_enabled() {

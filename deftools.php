@@ -136,6 +136,7 @@ if ( ! class_exists( 'DefTools' ) ) :
 			$this->define( 'DEFTOOLS_GIT_DIRS', '' );
 
 			// EMAILS
+			$this->define( 'DEFTOOLS_DISABLE_EMAIL', false );
 			$this->define( 'DEFTOOLS_EMAIL_DEBUG', '' );
 			$this->define( 'DEFTOOLS_EMAIL_ENABLE_SMTP', false );
 			$this->define( 'DEFTOOLS_EMAIL_SET_RETURN_PATH', false ); // Sets $phpmailer->Sender if true
