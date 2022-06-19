@@ -3,9 +3,9 @@
 
 
 pixl-class@^1.0.0:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/pixl-class/-/pixl-class-1.0.2.tgz#bbeabcf2a9e3a8aa7de52358ab52df12d3e24dfd"
-  integrity sha1-u+q88qnjqKp95SNYq1LfEtPiTf0=
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/pixl-class/-/pixl-class-1.0.3.tgz#1d25d84a2db6ba86b6056b9c71bfbc19dde46c80"
+  integrity sha512-YS3MS4IuBNvy1gAuMJtQiZPMdmRjK2EwqomJNUG3PJtCz5bbG5MWgY7xV780jx/2oIj/IHNYGyZmfqQRs0KTZw==
 
 pixl-json-stream@^1.0.6:
   version "1.0.6"
